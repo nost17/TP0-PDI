@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 
 
 class MainApp:
@@ -14,7 +15,13 @@ class MainApp:
         self.ventana.mainloop()
 
     def crear_interfaz(self) -> None:
-        pass
+        panel = ttk.Frame(self.ventana)
+        panel.pack(
+            fill="both",
+            expand=True,
+            padx=10,
+            pady=10,
+        )
 
 
 def main() -> None:
