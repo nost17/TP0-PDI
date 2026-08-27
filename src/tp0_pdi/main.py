@@ -56,10 +56,13 @@ class MainApp:
         ).grid(row=1, column=0, sticky=tk.NSEW, rowspan=2)
 
         self._crear_botones(panel_der).pack(side=tk.TOP, fill=tk.X)
-        self._crear_visual(
+
+        self.label_img_normal: ttk.Label = self._crear_visual(
             panel_der,
             "Abrí una imagen",
-        ).pack(fill=tk.BOTH, expand=True, pady=ESPACIO["izq"])
+        )
+
+        self.label_img_normal.pack(fill=tk.BOTH, expand=True, pady=ESPACIO["izq"])
 
     def _crear_botones(self, raiz: ttk.Frame) -> ttk.Frame:
         barra = ttk.Frame(raiz)
