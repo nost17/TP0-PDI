@@ -1,3 +1,4 @@
+import tkinter
 import tkinter as tk
 from tkinter import ttk
 
@@ -25,7 +26,7 @@ class MainApp:
     def crear_interfaz(self) -> None:
         panel = ttk.Frame(self.ventana)
         panel.pack(
-            fill="both",
+            fill=tk.BOTH,
             expand=True,
             padx=10,
             pady=10,
@@ -36,29 +37,29 @@ class MainApp:
         panel.columnconfigure(1, weight=1, uniform="paneles")
 
         panel_izq = ttk.Frame(panel)
-        panel_izq.grid(row=0, column=0, sticky="nsew", padx=ESPACIO["der"])
+        panel_izq.grid(row=0, column=0, sticky=tk.NSEW, padx=ESPACIO["der"])
 
         panel_izq.columnconfigure(0, weight=1)
         panel_izq.rowconfigure(0, weight=1, uniform="filas")
         panel_izq.rowconfigure(1, weight=3, uniform="filas")
 
         panel_der = ttk.Frame(panel)
-        panel_der.grid(row=0, column=1, sticky="nsew")
+        panel_der.grid(row=0, column=1, sticky=tk.NSEW)
 
         self._crear_visual(
             panel_izq,
             "Histograma",
-        ).grid(row=0, column=0, sticky="nsew", pady=ESPACIO["der"])
+        ).grid(row=0, column=0, sticky=tk.NSEW, pady=ESPACIO["der"])
         self._crear_visual(
             panel_izq,
             "Filtro",
-        ).grid(row=1, column=0, sticky="nsew", rowspan=2)
+        ).grid(row=1, column=0, sticky=tk.NSEW, rowspan=2)
 
-        self._crear_botones(panel_der).pack(side="top", fill="x")
+        self._crear_botones(panel_der).pack(side=tk.TOP, fill=tk.X)
         self._crear_visual(
             panel_der,
             "Abrí una imagen",
-        ).pack(fill="both", expand=True, pady=ESPACIO["izq"])
+        ).pack(fill=tk.BOTH, expand=True, pady=ESPACIO["izq"])
 
     def _crear_botones(self, raiz: ttk.Frame) -> ttk.Frame:
         barra = ttk.Frame(raiz)
@@ -97,7 +98,7 @@ class MainApp:
 
     def _crear_visual(self, raiz: ttk.Frame, texto) -> ttk.Label:
         return ttk.Label(
-            raiz, text=texto, anchor="center", borderwidth=1, relief="solid"
+            raiz, text=texto, anchor=tk.CENTER, borderwidth=1, relief=tk.SOLID
         )
 
 
