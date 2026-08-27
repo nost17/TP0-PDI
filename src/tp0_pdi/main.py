@@ -1,6 +1,14 @@
 import tkinter as tk
 from tkinter import ttk
 
+ESPACIO: dict[str, int | tuple[int]] = {
+    "normal": 10,
+    "izq": (10, 0),
+    "der": (0, 10),
+    "eizq": (5, 0),
+    "eder": (0, 5),
+}
+
 
 class MainApp:
     ventana: tk.Tk
@@ -21,6 +29,75 @@ class MainApp:
             expand=True,
             padx=10,
             pady=10,
+        )
+
+        panel.rowconfigure(0, weight=1)
+        panel.columnconfigure(0, weight=1, uniform="paneles")
+        panel.columnconfigure(1, weight=1, uniform="paneles")
+
+        panel_izq = ttk.Frame(panel)
+        panel_izq.grid(row=0, column=0, sticky="nsew", padx=ESPACIO["der"])
+
+        panel_izq.columnconfigure(0, weight=1)
+        panel_izq.rowconfigure(0, weight=1, uniform="filas")
+        panel_izq.rowconfigure(1, weight=3, uniform="filas")
+
+        panel_der = ttk.Frame(panel)
+        panel_der.grid(row=0, column=1, sticky="nsew")
+
+        self._crear_visual(
+            panel_izq,
+            "Histograma",
+        ).grid(row=0, column=0, sticky="nsew", pady=ESPACIO["der"])
+        self._crear_visual(
+            panel_izq,
+            "Filtro",
+        ).grid(row=1, column=0, sticky="nsew", rowspan=2)
+
+        self._crear_botones(panel_der).pack(side="top", fill="x")
+        self._crear_visual(
+            panel_der,
+            "Abrí una imagen",
+        ).pack(fill="both", expand=True, pady=ESPACIO["izq"])
+
+    def _crear_botones(self, raiz: ttk.Frame) -> ttk.Frame:
+        barra = ttk.Frame(raiz)
+
+        btn_abrir_imagen = ttk.Button(
+            barra,
+            text="Abrir imagen",
+            command=lambda: print("> abrir imagen"),
+            padding=(6, 3),
+        )
+        btn_aplicar_filtro = ttk.Button(
+            barra,
+            text="Aplicar filtro",
+            command=lambda: print("> aplicar filtro"),
+            padding=(6, 3),
+        )
+        btn_guardar = ttk.Button(
+            barra,
+            text="Guardar",
+            command=lambda: print("> guardar imagen"),
+            padding=(6, 3),
+        )
+        btn_restaurar = ttk.Button(
+            barra,
+            text="Restaurar",
+            command=lambda: print("> restaurar imagen"),
+            padding=(6, 3),
+        )
+
+        for i, b in enumerate(
+            [btn_abrir_imagen, btn_aplicar_filtro, btn_guardar, btn_restaurar]
+        ):
+            b.grid(row=0, column=i)
+
+        return barra
+
+    def _crear_visual(self, raiz: ttk.Frame, texto) -> ttk.Label:
+        return ttk.Label(
+            raiz, text=texto, anchor="center", borderwidth=1, relief="solid"
         )
 
 
