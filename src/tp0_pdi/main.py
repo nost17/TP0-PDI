@@ -26,7 +26,7 @@ class MainApp:
         self.ventana.geometry("1100x800")
 
         # ('winnative', 'clam', 'alt', 'default', 'classic', 'vista', 'xpnative')
-        ttk.Style().theme_use("winnative")
+        ttk.Style().theme_use("clam")
 
         self.imagen_normal = None
         self.imagen_actual = None
