@@ -1,3 +1,6 @@
+from matplotlib.axes import Axes
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 import tkinter as tk
 from tkinter import ttk
@@ -20,11 +23,12 @@ class MainApp:
     def __init__(self, ventana: tk.Tk):
         self.ventana = ventana
         self.ventana.title("PDI - Tkinter básico")
-        self.ventana.geometry("1000x700")
+        self.ventana.geometry("1100x800")
 
         self.imagen_normal = None
         self.imagen_actual = None
         self.imagen_original = None
+        self.histograma_axs: Axes = None
 
         self.crear_interfaz()
 
@@ -49,14 +53,16 @@ class MainApp:
 
         panel_izq.columnconfigure(0, weight=1)
         panel_izq.rowconfigure(0, weight=2, uniform="filas")
-        panel_izq.rowconfigure(1, weight=3, uniform="filas")
+        panel_izq.rowconfigure(1, weight=4, uniform="filas")
 
-        cont_histo = ttk.Frame(panel_izq)
+        cont_histo = ttk.Frame(panel_izq, relief="solid")
         cont_histo.grid(row=0, column=0, sticky=tk.NSEW, pady=ESPACIO["der"])
         cont_histo.pack_propagate(False)
 
-        self.label_histo: ttk.Label = self._crear_visual(cont_histo, "Histograma")
-        self.label_histo.pack(fill=tk.BOTH, expand=True)
+        self.canva_histo = FigureCanvasTkAgg(Figure(figsize=(8, 4)), master=cont_histo)
+        self.canva_histo.get_tk_widget().pack(fill=tk.BOTH, expand=True, padx=1, pady=1)
+        self.histograma_axs: Axes = self.canva_histo.figure.add_subplot()
+        self.histograma_axs.set_title("HISTOGRAMA")
 
         cont_filtro = ttk.Frame(panel_izq)
         cont_filtro.grid(row=1, column=0, sticky=tk.NSEW)  # Eliminamos el rowspan=2
@@ -76,6 +82,19 @@ class MainApp:
         )
 
         self.label_img_normal.pack(fill=tk.BOTH, expand=True, pady=ESPACIO["izq"])
+
+    def actualizar_histograma(self) -> None:
+        if self.imagen_actual is None:
+            return
+
+        self.histograma_axs.clear()
+        luminosidad = self.imagen_actual.mean(axis=2)
+
+        self.histograma_axs.hist(
+            luminosidad.reshape(-1), bins=128, range=(0.0, 1.0), color="gray", alpha=0.9
+        )
+        self.canva_histo.figure.tight_layout()
+        self.canva_histo.draw()
 
     def _crear_botones(self, raiz: ttk.Frame) -> ttk.Frame:
         nombres_filtros: tuple[str] = tuple(FILTROS.keys())
@@ -142,11 +161,15 @@ class MainApp:
 
         filtro = FILTROS[operacion]
 
-        resultado: ImagenArray = self.imagen_original if filtro is None else filtro(self.imagen_normal)
+        resultado: ImagenArray = (
+            self.imagen_original if filtro is None else filtro(self.imagen_normal)
+        )
 
         self.imagen_actual = resultado
 
         self.mostrar_imagen(resultado, self.label_img_filtro)
+
+        self.actualizar_histograma()
 
     def abrir_imagen(self):
 
