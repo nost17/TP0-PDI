@@ -1,1 +1,1 @@
-from .main import main
+from tp0_pdi.main import main

@@ -6,7 +6,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
-from .filtros import ImagenArray, FILTROS
+from tp0_pdi.filtros import ImagenArray, FILTROS
 
 ESPACIO: dict[str, int | tuple[int]] = {
     "normal": 10,
