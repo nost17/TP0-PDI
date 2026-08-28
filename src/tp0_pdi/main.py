@@ -25,6 +25,9 @@ class MainApp:
         self.ventana.title("PDI - Tkinter básico")
         self.ventana.geometry("1100x800")
 
+        # ('winnative', 'clam', 'alt', 'default', 'classic', 'vista', 'xpnative')
+        ttk.Style().theme_use("winnative")
+
         self.imagen_normal = None
         self.imagen_actual = None
         self.imagen_original = None
@@ -36,12 +39,10 @@ class MainApp:
         self.ventana.mainloop()
 
     def crear_interfaz(self) -> None:
-        panel = ttk.Frame(self.ventana)
+        panel = ttk.Frame(self.ventana, padding=ESPACIO["normal"])
         panel.pack(
             fill=tk.BOTH,
             expand=True,
-            padx=10,
-            pady=10,
         )
 
         panel.rowconfigure(0, weight=1)
@@ -110,11 +111,11 @@ class MainApp:
     def _crear_botones(self, raiz: ttk.Frame) -> ttk.Frame:
         nombres_filtros: tuple[str] = tuple(FILTROS.keys())
         padding: tuple[int] = (6, 4)
-        self.operacion = tk.StringVar(value=nombres_filtros[0])
+        self.operacion = tk.StringVar(value=nombres_filtros[1])
 
         barra = ttk.Frame(raiz)
 
-        btn_menu_filtros = tk.OptionMenu(barra, self.operacion, *nombres_filtros)
+        btn_menu_filtros = ttk.OptionMenu(barra, self.operacion, self.operacion.get(), *nombres_filtros)
 
         btn_menu_filtros.config(width=max(len(nombre) for nombre in nombres_filtros))
 
