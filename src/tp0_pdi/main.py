@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
+from .filtros import ImagenArray, FILTROS
 
 ESPACIO: dict[str, int | tuple[int]] = {
     "normal": 10,
@@ -12,8 +13,6 @@ ESPACIO: dict[str, int | tuple[int]] = {
     "eder": (0, 5),
 }
 
-type ImagenArray = np.ndarray[np.dtype[np.float64]]
-
 
 class MainApp:
     ventana: tk.Tk
@@ -21,7 +20,11 @@ class MainApp:
     def __init__(self, ventana: tk.Tk):
         self.ventana = ventana
         self.ventana.title("PDI - Tkinter básico")
-        self.ventana.geometry("900x600")
+        self.ventana.geometry("1000x700")
+
+        self.imagen_original = None
+        self.imagen_actual = None
+        
         self.crear_interfaz()
 
     def iniciar(self) -> None:
@@ -44,20 +47,25 @@ class MainApp:
         panel_izq.grid(row=0, column=0, sticky=tk.NSEW, padx=ESPACIO["der"])
 
         panel_izq.columnconfigure(0, weight=1)
-        panel_izq.rowconfigure(0, weight=1, uniform="filas")
+        panel_izq.rowconfigure(0, weight=2, uniform="filas")
         panel_izq.rowconfigure(1, weight=3, uniform="filas")
+
+        cont_histo = ttk.Frame(panel_izq)
+        cont_histo.grid(row=0, column=0, sticky=tk.NSEW, pady=ESPACIO["der"])
+        cont_histo.pack_propagate(False)
+
+        self.label_histo: ttk.Label = self._crear_visual(cont_histo, "Histograma")
+        self.label_histo.pack(fill=tk.BOTH, expand=True)
+
+        cont_filtro = ttk.Frame(panel_izq)
+        cont_filtro.grid(row=1, column=0, sticky=tk.NSEW)  # Eliminamos el rowspan=2
+        cont_filtro.pack_propagate(False)
+
+        self.label_img_filtro: ttk.Label = self._crear_visual(cont_filtro, "Filtro")
+        self.label_img_filtro.pack(fill=tk.BOTH, expand=True)
 
         panel_der = ttk.Frame(panel)
         panel_der.grid(row=0, column=1, sticky=tk.NSEW)
-
-        self._crear_visual(
-            panel_izq,
-            "Histograma",
-        ).grid(row=0, column=0, sticky=tk.NSEW, pady=ESPACIO["der"])
-        self._crear_visual(
-            panel_izq,
-            "Filtro",
-        ).grid(row=1, column=0, sticky=tk.NSEW, rowspan=2)
 
         self._crear_botones(panel_der).pack(side=tk.TOP, fill=tk.X)
 
@@ -69,7 +77,15 @@ class MainApp:
         self.label_img_normal.pack(fill=tk.BOTH, expand=True, pady=ESPACIO["izq"])
 
     def _crear_botones(self, raiz: ttk.Frame) -> ttk.Frame:
+        nombres_filtros: tuple[str] = tuple(FILTROS.keys())
+
+        self.operacion = tk.StringVar(value=nombres_filtros[0])
+
         barra = ttk.Frame(raiz)
+
+        btn_menu_filtros = tk.OptionMenu(barra, self.operacion, *nombres_filtros)
+
+        btn_menu_filtros.config(width=max(len(nombre) for nombre in nombres_filtros))
 
         btn_abrir_imagen = ttk.Button(
             barra,
@@ -80,7 +96,7 @@ class MainApp:
         btn_aplicar_filtro = ttk.Button(
             barra,
             text="Aplicar filtro",
-            command=lambda: print("> aplicar filtro"),
+            command=self.aplicar_filtro,
             padding=(6, 3),
         )
         btn_guardar = ttk.Button(
@@ -97,9 +113,16 @@ class MainApp:
         )
 
         for i, b in enumerate(
-            [btn_abrir_imagen, btn_aplicar_filtro, btn_guardar, btn_restaurar]
+            [
+                btn_abrir_imagen,
+                btn_menu_filtros,
+                btn_aplicar_filtro,
+                btn_guardar,
+                btn_restaurar,
+            ]
         ):
             b.grid(row=0, column=i)
+            barra.columnconfigure(i, weight=1)
 
         return barra
 
@@ -107,6 +130,25 @@ class MainApp:
         return ttk.Label(
             raiz, text=texto, anchor=tk.CENTER, borderwidth=1, relief=tk.SOLID
         )
+
+    def aplicar_filtro(self) -> None:
+
+        if self.imagen_original is None:
+            messagebox.showwarning("Atención", "Primero abrí una imagen.")
+            return
+
+        operacion = self.operacion.get()
+
+        imagen: ImagenArray = self.imagen_original
+
+        filtro = FILTROS[operacion]
+
+        if filtro is None:
+            return
+
+        resultado: ImagenArray = filtro(imagen)
+
+        self.mostrar_imagen(resultado, self.label_img_filtro)
 
     def abrir_imagen(self):
 
@@ -133,9 +175,12 @@ class MainApp:
         # La imagen actual comienza siendo igual a la original.
         self.imagen_actual: ImagenArray = self.imagen_original.copy()
 
-        self.mostrar_imagen(self.imagen_actual)
+        self.mostrar_imagen(self.imagen_actual, self.label_img_normal)
+        self.aplicar_filtro()
 
-    def mostrar_imagen(self, array_imagen: ImagenArray) -> None:
+    def mostrar_imagen(
+        self, array_imagen: ImagenArray, contenedor: ttk.Label, altura=None
+    ) -> None:
         # Convertimos 0-1 nuevamente a 0-255.
         imagen_uint8 = (np.clip(array_imagen, 0, 1) * 255).astype(np.uint8)
 
@@ -143,9 +188,9 @@ class MainApp:
         imagen_pil: Image = Image.fromarray(imagen_uint8)
 
         # Acá calculamos el ancho y alto del contenedor
-        # para que la imagen ocupe su mismo tamaño
-        ancho: int = self.label_img_normal.winfo_width()
-        alto: int = self.label_img_normal.winfo_height()
+        # para que la imagen ocupe el mismo tamaño y quede bien
+        ancho: int = contenedor.winfo_width()
+        alto: int = contenedor.winfo_height()
 
         if ancho <= 1 or alto <= 1:
             ancho, alto = 600, 600
@@ -156,10 +201,10 @@ class MainApp:
         foto = ImageTk.PhotoImage(imagen_pil)
 
         # Guardamos la referencia.
-        self.label_img_normal.foto = foto
+        contenedor.foto = foto
 
         # Mostramos la imagen.
-        self.label_img_normal.config(image=foto, text="")
+        contenedor.config(image=foto, text="")
 
 
 def main() -> None:
