@@ -24,7 +24,7 @@ class MainApp:
 
         self.imagen_original = None
         self.imagen_actual = None
-        
+
         self.crear_interfaz()
 
     def iniciar(self) -> None:
@@ -102,7 +102,7 @@ class MainApp:
         btn_guardar = ttk.Button(
             barra,
             text="Guardar",
-            command=lambda: print("> guardar imagen"),
+            command=self.guardar_imagen,
             padding=(6, 3),
         )
         btn_restaurar = ttk.Button(
@@ -147,6 +147,8 @@ class MainApp:
             return
 
         resultado: ImagenArray = filtro(imagen)
+
+        self.imagen_actual = resultado
 
         self.mostrar_imagen(resultado, self.label_img_filtro)
 
@@ -205,6 +207,19 @@ class MainApp:
 
         # Mostramos la imagen.
         contenedor.config(image=foto, text="")
+
+    def guardar_imagen(self):
+        if self.imagen_actual is not None:
+            path = filedialog.asksaveasfilename(
+                defaultextension=".png",
+                initialfile="imagen_procesada.png",
+                filetypes=[("PNG", "*.png"), ("JPEG", "*.jpg")],
+            )
+            if path:
+                img: Image = Image.fromarray(
+                    (np.clip(self.imagen_actual, 0, 1) * 255).astype(np.uint8)
+                )
+                img.save(path)
 
 
 def main() -> None:
