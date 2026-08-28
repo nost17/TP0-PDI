@@ -60,7 +60,8 @@ def original(imagen: ImagenArray) -> ImagenArray:
 
 
 FILTROS: dict[str, Callable[[ImagenArray], ImagenArray]] = {
-    "Original": original,
+    "Sin filtro": None,
+    "Normal": original,
     "Escala de grises": escala_grises,
     "Invertido": invertido,
     "Canal Rojo": solo_canal(0),

@@ -22,8 +22,9 @@ class MainApp:
         self.ventana.title("PDI - Tkinter básico")
         self.ventana.geometry("1000x700")
 
-        self.imagen_original = None
+        self.imagen_normal = None
         self.imagen_actual = None
+        self.imagen_original = None
 
         self.crear_interfaz()
 
@@ -133,20 +134,15 @@ class MainApp:
 
     def aplicar_filtro(self) -> None:
 
-        if self.imagen_original is None:
+        if self.imagen_normal is None:
             messagebox.showwarning("Atención", "Primero abrí una imagen.")
             return
 
         operacion = self.operacion.get()
 
-        imagen: ImagenArray = self.imagen_original
-
         filtro = FILTROS[operacion]
 
-        if filtro is None:
-            return
-
-        resultado: ImagenArray = filtro(imagen)
+        resultado: ImagenArray = self.imagen_original if filtro is None else filtro(self.imagen_normal)
 
         self.imagen_actual = resultado
 
@@ -172,10 +168,12 @@ class MainApp:
         # 0   -> 0.0
         # 255 -> 1.0
         #
-        self.imagen_original: ImagenArray = np.array(imagen_pil) / 255.0
+        self.imagen_normal: ImagenArray = np.array(imagen_pil) / 255.0
 
         # La imagen actual comienza siendo igual a la original.
-        self.imagen_actual: ImagenArray = self.imagen_original.copy()
+        self.imagen_actual: ImagenArray = self.imagen_normal.copy()
+
+        self.imagen_original: ImagenArray = self.imagen_normal.copy()
 
         self.mostrar_imagen(self.imagen_actual, self.label_img_normal)
         self.aplicar_filtro()
@@ -227,14 +225,14 @@ class MainApp:
                 img.save(path)
 
     def intercambiar_imagenes(self) -> None:
-        if self.imagen_actual is None or self.imagen_original is None:
+        if self.imagen_actual is None or self.imagen_normal is None:
             return
 
-        self.imagen_original = self.imagen_actual.copy()
+        self.imagen_normal = self.imagen_actual.copy()
         self.imagen_actual = None
 
-        self.mostrar_imagen(self.imagen_original, self.label_img_normal)
-        self.mostrar_imagen(self.imagen_original, self.label_img_filtro)
+        self.mostrar_imagen(self.imagen_normal, self.label_img_normal)
+        self.mostrar_imagen(self.imagen_normal, self.label_img_filtro)
 
 
 def main() -> None:
