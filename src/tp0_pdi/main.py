@@ -56,7 +56,7 @@ class MainApp:
         panel_izq.rowconfigure(1, weight=4, uniform="filas")
 
         cont_histo = ttk.Frame(panel_izq, relief="solid")
-        cont_histo.grid(row=0, column=0, sticky=tk.NSEW, pady=ESPACIO["der"])
+        cont_histo.grid(row=0, column=0, sticky=tk.NSEW)
         cont_histo.pack_propagate(False)
 
         self.canva_histo = FigureCanvasTkAgg(Figure(figsize=(8, 4)), master=cont_histo)
@@ -69,7 +69,7 @@ class MainApp:
         cont_filtro.pack_propagate(False)
 
         self.label_img_filtro: ttk.Label = self._crear_visual(cont_filtro, "Filtro")
-        self.label_img_filtro.pack(fill=tk.BOTH, expand=True)
+        self.label_img_filtro.pack(fill=tk.BOTH, expand=True, pady=ESPACIO["izq"])
 
         panel_der = ttk.Frame(panel)
         panel_der.grid(row=0, column=1, sticky=tk.NSEW)
@@ -82,6 +82,12 @@ class MainApp:
         )
 
         self.label_img_normal.pack(fill=tk.BOTH, expand=True, pady=ESPACIO["izq"])
+        self._crear_titulo(cont_filtro, "resultado").pack(
+            fill=tk.X, pady=ESPACIO["eizq"]
+        )
+        self._crear_titulo(panel_der, "visualización").pack(
+            fill=tk.X, pady=ESPACIO["eizq"]
+        )
 
     def actualizar_histograma(self) -> None:
         if self.imagen_actual is None:
@@ -96,9 +102,14 @@ class MainApp:
         self.canva_histo.figure.tight_layout()
         self.canva_histo.draw()
 
+    def _crear_titulo(self, raiz: ttk.Frame, texto: str) -> ttk.Label:
+        return ttk.Label(
+            raiz, text=texto.upper(), anchor=tk.CENTER, font=("Arial", 14, "bold")
+        )
+
     def _crear_botones(self, raiz: ttk.Frame) -> ttk.Frame:
         nombres_filtros: tuple[str] = tuple(FILTROS.keys())
-
+        padding: tuple[int] = (6, 4)
         self.operacion = tk.StringVar(value=nombres_filtros[0])
 
         barra = ttk.Frame(raiz)
@@ -111,25 +122,25 @@ class MainApp:
             barra,
             text="Abrir imagen",
             command=self.abrir_imagen,
-            padding=(6, 3),
+            padding=padding,
         )
         btn_aplicar_filtro = ttk.Button(
             barra,
             text="Aplicar filtro",
             command=self.aplicar_filtro,
-            padding=(6, 3),
+            padding=padding,
         )
         btn_guardar = ttk.Button(
             barra,
             text="Guardar",
             command=self.guardar_imagen,
-            padding=(6, 3),
+            padding=padding,
         )
         btn_intercambiar = ttk.Button(
             barra,
             text="Intercambio",
             command=self.intercambiar_imagenes,
-            padding=(6, 3),
+            padding=padding,
         )
 
         for i, b in enumerate(
