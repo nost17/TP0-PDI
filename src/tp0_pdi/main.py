@@ -56,12 +56,12 @@ class MainApp:
         panel_izq.rowconfigure(0, weight=2, uniform="filas")
         panel_izq.rowconfigure(1, weight=4, uniform="filas")
 
-        cont_histo = ttk.Frame(panel_izq, relief="solid")
+        cont_histo = ttk.Frame(panel_izq, relief=tk.GROOVE)
         cont_histo.grid(row=0, column=0, sticky=tk.NSEW)
         cont_histo.pack_propagate(False)
 
         self.canva_histo = FigureCanvasTkAgg(Figure(figsize=(8, 4)), master=cont_histo)
-        self.canva_histo.get_tk_widget().pack(fill=tk.BOTH, expand=True, padx=1, pady=1)
+        self.canva_histo.get_tk_widget().pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
         self.histograma_axs: Axes = self.canva_histo.figure.add_subplot()
         self.histograma_axs.set_title("HISTOGRAMA")
 
@@ -115,7 +115,9 @@ class MainApp:
 
         barra = ttk.Frame(raiz)
 
-        btn_menu_filtros = ttk.OptionMenu(barra, self.operacion, self.operacion.get(), *nombres_filtros)
+        btn_menu_filtros = ttk.OptionMenu(
+            barra, self.operacion, self.operacion.get(), *nombres_filtros
+        )
 
         btn_menu_filtros.config(width=max(len(nombre) for nombre in nombres_filtros))
 
@@ -160,7 +162,7 @@ class MainApp:
 
     def _crear_visual(self, raiz: ttk.Frame, texto) -> ttk.Label:
         return ttk.Label(
-            raiz, text=texto, anchor=tk.CENTER, borderwidth=1, relief=tk.SOLID
+            raiz, text=texto, anchor=tk.CENTER, borderwidth=1, relief=tk.GROOVE
         )
 
     def aplicar_filtro(self) -> None:
