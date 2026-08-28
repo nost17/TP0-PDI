@@ -105,10 +105,10 @@ class MainApp:
             command=self.guardar_imagen,
             padding=(6, 3),
         )
-        btn_restaurar = ttk.Button(
+        btn_intercambiar = ttk.Button(
             barra,
-            text="Restaurar",
-            command=lambda: print("> restaurar imagen"),
+            text="Intercambio",
+            command=self.intercambiar_imagenes,
             padding=(6, 3),
         )
 
@@ -118,7 +118,7 @@ class MainApp:
                 btn_menu_filtros,
                 btn_aplicar_filtro,
                 btn_guardar,
-                btn_restaurar,
+                btn_intercambiar,
             ]
         ):
             b.grid(row=0, column=i)
@@ -183,6 +183,11 @@ class MainApp:
     def mostrar_imagen(
         self, array_imagen: ImagenArray, contenedor: ttk.Label, altura=None
     ) -> None:
+
+        if array_imagen is None:
+            self.label_img_filtro.foto = None
+            return
+
         # Convertimos 0-1 nuevamente a 0-255.
         imagen_uint8 = (np.clip(array_imagen, 0, 1) * 255).astype(np.uint8)
 
@@ -220,6 +225,16 @@ class MainApp:
                     (np.clip(self.imagen_actual, 0, 1) * 255).astype(np.uint8)
                 )
                 img.save(path)
+
+    def intercambiar_imagenes(self) -> None:
+        if self.imagen_actual is None or self.imagen_original is None:
+            return
+
+        self.imagen_original = self.imagen_actual.copy()
+        self.imagen_actual = None
+
+        self.mostrar_imagen(self.imagen_original, self.label_img_normal)
+        self.mostrar_imagen(self.imagen_original, self.label_img_filtro)
 
 
 def main() -> None:
