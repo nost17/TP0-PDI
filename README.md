@@ -6,6 +6,14 @@ uv sync
 ```
 
 # Ejecutar
+En windows:
+```powershell
+.\.venv\Scripts\activate 
+python .\src\tp<numero_de_tp>.py
+```
+
+En linux
 ```sh
-uv run main
+source .venv/Scripts/activate 
+python ./src/tp<numero_de_tp>.py
 ```
