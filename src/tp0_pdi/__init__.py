@@ -1,1 +1,0 @@
-from tp0_pdi.main import main
