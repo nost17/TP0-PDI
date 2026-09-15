@@ -6,12 +6,6 @@ uv sync
 ```
 
 # Ejecutar
-En windows:
-```powershell
-uv run .\src\tp<numero_de_tp>.py
 ```
-
-En linux
-```sh
-uv run ./src/tp<numero_de_tp>.py
+uv run tp-<numero_de_tp>.py
 ```
