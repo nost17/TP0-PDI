@@ -1,4 +1,5 @@
 from collections.abc import Callable
+
 import numpy as np
 
 type ImagenArray = np.ndarray[np.dtype[np.float64]]

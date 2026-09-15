@@ -1,12 +1,13 @@
-from matplotlib.axes import Axes
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import numpy as np
 import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, ttk
+
+import numpy as np
+from matplotlib.axes import Axes
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
 from PIL import Image, ImageTk
-from tp0_filtros import ImagenArray, FILTROS
+
+from pdi.tp0_filtros import FILTROS, ImagenArray
 
 ESPACIO: dict[str, int | tuple[int]] = {
     "normal": 10,
