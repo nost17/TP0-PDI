@@ -1,4 +1,3 @@
-from typing import Any
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 import numpy as np
@@ -46,19 +45,19 @@ def interpolacion(img1, img2):
     return img3, suma_y
 
 
+def _recortar_centro(img, alto_obj, ancho_obj):
+    alto, ancho = img.shape[:2]
+    inicio_y = (alto - alto_obj) // 2
+    inicio_x = (ancho - ancho_obj) // 2
+    return img[inicio_y : inicio_y + alto_obj, inicio_x : inicio_x + ancho_obj]
+
+
 def igualar_dimensiones(img1, img2):
     min_alto = min(img1.shape[0], img2.shape[0])
     min_ancho = min(img1.shape[1], img2.shape[1])
 
-    def recortar_centro(img, alto_obj, ancho_obj):
-        alto, ancho = img.shape[:2]
-        inicio_y = (alto - alto_obj) // 2
-        inicio_x = (ancho - ancho_obj) // 2
-
-        return img[inicio_y : inicio_y + alto_obj, inicio_x : inicio_x + ancho_obj]
-
-    img1_rec = recortar_centro(img1, min_alto, min_ancho)
-    img2_rec = recortar_centro(img2, min_alto, min_ancho)
+    img1_rec = _recortar_centro(img1, min_alto, min_ancho)
+    img2_rec = _recortar_centro(img2, min_alto, min_ancho)
 
     return img1_rec, img2_rec
 
