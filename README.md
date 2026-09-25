@@ -7,5 +7,5 @@ uv sync
 
 # Ejecutar
 ```
-uv run tp-<numero_de_tp>.py
+uv run tp-<numero_de_tp>
 ```
