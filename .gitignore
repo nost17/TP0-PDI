@@ -9,5 +9,5 @@ wheels/
 # Virtual environments
 .venv
 
-# Colab notebooks
-tmp/*.ipynb
+# Cualquier cosa
+tmp/*
