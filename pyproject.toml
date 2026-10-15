@@ -16,6 +16,7 @@ tp-0 = "pdi.tp0:main"
 tp-1 = "pdi.tp1:main"
 tp-2 = "pdi.tp2:main"
 tp-3 = "pdi.tp3:main"
+tp-4 = "pdi.tp4:main"
 
 [build-system]
 requires = ["uv_build>=0.12.3,<0.13.0"]
