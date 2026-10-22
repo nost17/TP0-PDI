@@ -207,11 +207,7 @@ class AppFiltros:
         self.estado.config(text=f"Filtro aplicado: {nombre_filtro}")
 
     def mostrar_imagen(self, array_imagen, label_widget):
-        imagen_uint8 = (np.clip(array_imagen, 0, 1) * 255).astype(np.uint8)
-        imagen_pil = Image.fromarray(imagen_uint8)
-        imagen_pil.thumbnail((500, 500))
-
-        foto = ImageTk.PhotoImage(imagen_pil)
+        foto = helper.img_a_widget(array_imagen)
         label_widget.foto = foto
         label_widget.config(image=foto, text="")
 
