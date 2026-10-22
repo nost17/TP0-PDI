@@ -30,6 +30,7 @@ def yiq_a_rgb(_im: ImagenArray) -> ImagenArray:
 
 # region Aritmetica de pixeles
 
+
 def clamp(img: ImagenArray) -> ImagenArray:
     return np.clip(img, 0.0, 1.0)
 
@@ -94,9 +95,7 @@ class AritImg:
         return yiq_a_rgb(img3)
 
     @staticmethod
-    def _restar_yiq(
-        imgA_yiq, imgB_yiq, clampear=True, absoluto=False
-    ) -> ImagenArray:
+    def _restar_yiq(imgA_yiq, imgB_yiq, clampear=True, absoluto=False) -> ImagenArray:
         img3, _ = interpolacion(imgA_yiq, imgB_yiq)
         resta_y = imgA_yiq[:, :, 0] - imgB_yiq[:, :, 0]
         if absoluto:
@@ -127,9 +126,7 @@ class AritImg:
         absoluto=False,
     ) -> ImagenArray:
         if yiq:
-            return AritImg._restar_yiq(
-                imgA_yiq, imgB_yiq, clampear, absoluto
-            )
+            return AritImg._restar_yiq(imgA_yiq, imgB_yiq, clampear, absoluto)
         resta = imgA - imgB
         if absoluto:
             return abs(resta)
@@ -188,22 +185,27 @@ class AritImg:
     def if_yiq(self, darker=False) -> ImagenArray:
         return self.if_yiq_img(self.imgA_yiq, self.imgB_yiq, darker)
 
+
 # endregion
 
 # region Utilidades para interfaz gráfica
 
+
 def img_a_pil(array_imagen: np.ndarray) -> Image.Image:
     imagen_uint8 = (clamp(array_imagen) * 255).astype(np.uint8)
     return Image.fromarray(imagen_uint8)
+
 
 def img_a_widget(array_imagen: np.ndarray, tamano=(500, 500)) -> ImageTk.PhotoImage:
     imagen_pil: Image = img_a_pil(array_imagen)
     imagen_pil.thumbnail(tamano)
     return ImageTk.PhotoImage(imagen_pil)
 
+
 # endregion
 
 # region Filtros
+
 
 def filtro_raiz(img: ImagenArray) -> ImagenArray:
     return np.sqrt(clamp(img))
@@ -212,7 +214,9 @@ def filtro_raiz(img: ImagenArray) -> ImagenArray:
 def filtro_cuadrado(img: ImagenArray) -> ImagenArray:
     return np.square(clamp(img))
 
+
 # endregion
+
 
 def mi_funcion():
     print("HOLA")
