@@ -1,7 +1,7 @@
 import numpy as np
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
-from PIL import Image, ImageTk
+from PIL import Image
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from pdi.helper_pdi import ImagenArray
