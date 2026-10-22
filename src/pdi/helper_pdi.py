@@ -192,7 +192,7 @@ class AritImg:
 
 # region Utilidades para interfaz gráfica
 
-def img_a_pil(array_imagen: np.ndarray) -> Image:
+def img_a_pil(array_imagen: np.ndarray) -> Image.Image:
     imagen_uint8 = (clamp(array_imagen) * 255).astype(np.uint8)
     return Image.fromarray(imagen_uint8)
 
